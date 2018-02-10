@@ -1,90 +1,57 @@
 package lib
 
-// TODO rethink project layout
-
 import (
-	"log"
 	"net/http"
 	"fmt"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/basicfont"
-	"golang.org/x/image/math/fixed"
 	"image"
-	"image/color"
 	"image/png"
-	"os"
+	"bytes"
 )
 
 
-func CreateInspiration(url string, text string) *image.NRGBA {
-	image := downloadImageAsBytes(url)
-	addText(&image, text)
-	saveImageToDisk(&image)
-	return &image
-}
-
-func downloadImageAsBytes(url string) image.NRGBA {
-
+func CreateInspiration(url string, text string) []byte {
 	validateImageMimeType(url)
-	response, err := http.Get(url)
-	defer response.Body.Close()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	pngImage, err := png.Decode(response.Body)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	nrgbaImage := pngImage.(*image.NRGBA)
-
-	return *nrgbaImage
-}
-
-func saveImageToDisk(pngImage *image.NRGBA) {
-	file, err := os.Create("/tmp/image.png")
-	defer file.Close()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = png.Encode(file, pngImage)
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	image := downloadImage(url)
+	addText(image, text)
+	return convertImageNrgbaToBytes(image)
 }
 
 func validateImageMimeType(url string) {
-	response, e := http.Head(url)
+	response, err := http.Head(url)
 	defer response.Body.Close()
-
-	if e != nil {
-		// TODO handle error
-		log.Fatal(e)
-	}
+	checkError(err)
 
 	contentType := response.Header["Content-Type"]
 	fmt.Println("Content type: ", contentType)
 }
 
-func addText(img *image.NRGBA, text string) {
-	addLabelHelper(img, 20, 30, text)
+func downloadImage(url string) *image.NRGBA {
+	response, err := http.Get(url)
+	defer response.Body.Close()
+	checkError(err)
+
+	pngImage, err := png.Decode(response.Body)
+	checkError(err)
+
+	nrgbaImage := pngImage.(*image.NRGBA)
+	return nrgbaImage
 }
 
-func addLabelHelper(img *image.NRGBA, x, y int, label string) {
-	col := color.RGBA{200, 100, 0, 255}
-	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
+func convertImageNrgbaToBytes(nrgbaImage *image.NRGBA) []byte {
+	var img image.Image
+	img = nrgbaImage
 
-	d := &font.Drawer{
-		Dst:  img,
-		Src:  image.NewUniform(col),
-		Face: basicfont.Face7x13,
-		Dot:  point,
+	buf := new(bytes.Buffer)
+
+	err := png.Encode(buf, img)
+	checkError(err)
+
+	return buf.Bytes()
+}
+
+
+func checkError(err error) {
+	if err != nil {
+		panic(err)
 	}
-	d.DrawString(label)
 }

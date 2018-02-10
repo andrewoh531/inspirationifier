@@ -5,9 +5,6 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin/binding"
 	"spaceship/lib"
-	"bytes"
-	"image"
-	"image/png"
 )
 
 func setupRouter() *gin.Engine {
@@ -40,23 +37,9 @@ func createInspiration(c *gin.Context) {
 	var request inspirationPayload
 
 	if err := c.ShouldBindWith(&request, binding.JSON); err == nil {
-
-		rawImage := lib.CreateInspiration(request.Url, request.Text)
-		var img image.Image
-		img = rawImage
-
-		buf := new(bytes.Buffer)
-		err := png.Encode(buf, img)
-		checkError(err)
-
-		c.Data(http.StatusCreated, "image/png", buf.Bytes())
+		imageBytes := lib.CreateInspiration(request.Url, request.Text)
+		c.Data(http.StatusCreated, "image/png", imageBytes)
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "hmmm bad request yo"}) // TODO Fix error message returned
-	}
-}
-
-func checkError(err error) {
-	if err != nil {
-		panic(err)
 	}
 }
