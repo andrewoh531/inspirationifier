@@ -31,3 +31,9 @@ The following bash command below will make a valid request and save the response
 ```bash
 curl  -H "Content-Type: application/json" -d @sample-payload.json localhost:8080/api/v1/createInspiration > image.png
 ```
+
+
+## Limitations/Technical Debt
+The following limitations and technical debt remains due to time constraints:
+- Supports only the following MIME types: image/png and image/jpeg due to time restrictions
+- Integration tests hit external services rather than having a full contained test using Docker containers

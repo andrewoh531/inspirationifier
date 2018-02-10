@@ -45,9 +45,3 @@ func DownloadImage(url string) (*image.NRGBA, error) {
 	nrgbaImage := pngImage.(*image.NRGBA)
 	return nrgbaImage, nil
 }
-
-func checkError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
