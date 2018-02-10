@@ -11,11 +11,11 @@ var SupportedMimeTypes = map[string]bool { "image/png": true, "image/jpeg": true
 
 func ValidateImageMimeType(url string) error {
 	response, err := http.Head(url)
-	defer response.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
+	defer response.Body.Close()
 
 	contentTypeArray := response.Header["Content-Type"]
 

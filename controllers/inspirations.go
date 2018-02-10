@@ -5,10 +5,11 @@ import (
 	"image"
 	"bytes"
 	"image/png"
+	"strings"
 )
 
 func CreateInspiration(url string, text string) ([]byte, error) {
-	err := lib.ValidateImageMimeType(url)
+	err := validate(url)
 	if err != nil {
 		return nil, err
 	}
@@ -20,6 +21,14 @@ func CreateInspiration(url string, text string) ([]byte, error) {
 
 	lib.AddTextToImage(image, text)
 	return convertImageNrgbaToBytes(image), nil
+}
+
+func validate(url string) error {
+	trimmed := strings.TrimSpace(url)
+	if strings.Index(trimmed, "http") != 0 {
+		return lib.NewUserError("Please provide 'http' or 'https' protocol.")
+	}
+	return lib.ValidateImageMimeType(url)
 }
 
 func convertImageNrgbaToBytes(nrgbaImage *image.NRGBA) []byte {
