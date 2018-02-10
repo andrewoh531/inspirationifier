@@ -3,9 +3,11 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"fmt"
 	"github.com/gin-gonic/gin/binding"
 	"spaceship/lib"
+	"bytes"
+	"image"
+	"image/png"
 )
 
 func setupRouter() *gin.Engine {
@@ -35,19 +37,26 @@ func healthCheck(c *gin.Context) {
 }
 
 func createInspiration(c *gin.Context) {
-	var inspirationPayload inspirationPayload
+	var request inspirationPayload
 
-	if err := c.ShouldBindWith(&inspirationPayload, binding.JSON); err == nil {
+	if err := c.ShouldBindWith(&request, binding.JSON); err == nil {
 
-		rawImage := lib.DownloadImageAsBytes(inspirationPayload.Url)
+		rawImage := lib.CreateInspiration(request.Url, request.Text)
+		var img image.Image
+		img = rawImage
 
-		// Add text to the image
+		buf := new(bytes.Buffer)
+		err := png.Encode(buf, img)
+		checkError(err)
 
-		// Return image as downloadable response
-
-		message := fmt.Sprintf("Payload received %s, %s", inspirationPayload.Text, inspirationPayload.Url)
-		c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": message})
+		c.Data(http.StatusCreated, "image/png", buf.Bytes())
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "hmmm bad request yo"}) // TODO Fix error message returned
+	}
+}
+
+func checkError(err error) {
+	if err != nil {
+		panic(err)
 	}
 }

@@ -14,7 +14,7 @@ const ValidSvgImageUrl = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Ap
 const ExpectedPngImagePath = "./testUtilities/seattle-seahawks-logo.png"
 
 func TestDownloadImageWithValidPngUrl(t *testing.T) {
-	downloadedContent := DownloadImageAsBytes(ValidPngImageUrl)
+	downloadedContent := CreateInspiration(ValidPngImageUrl, "Yolo")
 
 	//file, err := os.Open(ExpectedPngImagePath) // For read access.
 	//if err != nil {

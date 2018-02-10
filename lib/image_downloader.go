@@ -1,20 +1,29 @@
 package lib
 
-// TODO change package name
 // TODO rethink project layout
 
 import (
 	"log"
 	"net/http"
-	//"os"
-	//"io"
 	"fmt"
-	"io/ioutil"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
+	"golang.org/x/image/math/fixed"
+	"image"
+	"image/color"
+	"image/png"
+	"os"
 )
 
 
+func CreateInspiration(url string, text string) *image.NRGBA {
+	image := downloadImageAsBytes(url)
+	addText(&image, text)
+	saveImageToDisk(&image)
+	return &image
+}
 
-func DownloadImageAsBytes(url string) []byte {
+func downloadImageAsBytes(url string) image.NRGBA {
 
 	validateImageMimeType(url)
 	response, err := http.Get(url)
@@ -24,27 +33,30 @@ func DownloadImageAsBytes(url string) []byte {
 		log.Fatal(err)
 	}
 
-	contents, err := ioutil.ReadAll(response.Body)
+	pngImage, err := png.Decode(response.Body)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return contents
-	//
-	//
-	////open a file for writing
-	//file, err := os.Create("/tmp/asdf.jpg")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//// Use io.Copy to just dump the response body to the file. This supports huge files
-	//_, err = io.Copy(file, response.Body)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//file.Close()
-	//fmt.Println("Success!")
+	nrgbaImage := pngImage.(*image.NRGBA)
+
+	return *nrgbaImage
+}
+
+func saveImageToDisk(pngImage *image.NRGBA) {
+	file, err := os.Create("/tmp/image.png")
+	defer file.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = png.Encode(file, pngImage)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func validateImageMimeType(url string) {
@@ -60,11 +72,19 @@ func validateImageMimeType(url string) {
 	fmt.Println("Content type: ", contentType)
 }
 
-func addTextToImage(rawImage []byte, text string) []byte {
-
-
-
-	return nil
+func addText(img *image.NRGBA, text string) {
+	addLabelHelper(img, 20, 30, text)
 }
 
+func addLabelHelper(img *image.NRGBA, x, y int, label string) {
+	col := color.RGBA{200, 100, 0, 255}
+	point := fixed.Point26_6{fixed.Int26_6(x * 64), fixed.Int26_6(y * 64)}
 
+	d := &font.Drawer{
+		Dst:  img,
+		Src:  image.NewUniform(col),
+		Face: basicfont.Face7x13,
+		Dot:  point,
+	}
+	d.DrawString(label)
+}

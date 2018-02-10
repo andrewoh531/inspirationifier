@@ -61,6 +61,17 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/image"
+  packages = [
+    "font",
+    "font/basicfont",
+    "font/plan9font",
+    "math/fixed"
+  ]
+  revision = "12117c17ca67ffa1ce22e9409f3b0b0a93ac08c7"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "3dbebcf8efb6a5011a60c2b4591c1022a759af8a"
@@ -80,6 +91,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c41be9f6a676ddbe2d8a0cd045f46c2486a6003fe10c685a74a1a84bdec3e16e"
+  inputs-digest = "ccce53bb99fb9dab1b9ceae13ca609fc9cf30b66a8743eb009f14b87ee59bca2"
   solver-name = "gps-cdcl"
   solver-version = 1
