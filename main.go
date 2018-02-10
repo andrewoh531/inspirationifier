@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"fmt"
 	"github.com/gin-gonic/gin/binding"
+	"spaceship/lib"
 )
 
 func setupRouter() *gin.Engine {
@@ -37,9 +38,16 @@ func createInspiration(c *gin.Context) {
 	var inspirationPayload inspirationPayload
 
 	if err := c.ShouldBindWith(&inspirationPayload, binding.JSON); err == nil {
+
+		rawImage := lib.DownloadImageAsBytes(inspirationPayload.Url)
+
+		// Add text to the image
+
+		// Return image as downloadable response
+
 		message := fmt.Sprintf("Payload received %s, %s", inspirationPayload.Text, inspirationPayload.Url)
 		c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "message": message})
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "hmmm bad request yo"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "hmmm bad request yo"}) // TODO Fix error message returned
 	}
 }
