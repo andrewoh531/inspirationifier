@@ -14,7 +14,6 @@ func TestInvalidPathShouldReturn404(t *testing.T) {
 	r := gofight.New()
 
 	r.GET("/api/v1/createInspiration").
-		SetDebug(true).
 		Run(setupRouter(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 		assert.Equal(t, http.StatusNotFound, r.Code)
 	})
@@ -25,7 +24,6 @@ func TestMissingRequiredParameterShouldReturn400(t *testing.T) {
 
 	r.POST("/api/v1/createInspiration").
 		SetJSON(gofight.D{"url": ValidImageUrl}).
-		SetDebug(true).
 		Run(setupRouter(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 			assert.Equal(t, http.StatusBadRequest, r.Code)
 			assert.Equal(t, "JSON payload requires both a 'text' and 'url' property", r.Body.String())
@@ -39,7 +37,6 @@ func TestValidParametersProvidedRequestShouldReturn200(t *testing.T) {
 	r := gofight.New()
 	r.POST("/api/v1/createInspiration").
 		SetJSON(payload).
-		SetDebug(true).
 		Run(setupRouter(), func(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 			assert.Equal(t, http.StatusCreated, r.Code)
 		})

@@ -13,7 +13,7 @@ func setupRouter() *gin.Engine {
 
 	v1 := router.Group("/api/v1/")
 	{
-		v1.GET("/ping", healthCheck)
+		v1.GET("/healthcheck", healthCheck)
 		v1.POST("/createInspiration", createInspiration)
 	}
 
@@ -38,12 +38,14 @@ func createInspiration(c *gin.Context) {
 	var request inspirationPayload
 
 	if err := c.ShouldBindWith(&request, binding.JSON); err == nil {
-		imageBytes, err := controllers.CreateInspiration(request.Url, request.Text)
+		imageChannel := make(chan controllers.InspirationResult)
+		go controllers.CreateInspiration(request.Url, request.Text, imageChannel)
 
-		if err != nil {
-			handleError(c, err)
+		response := <-imageChannel
+		if response.Error != nil {
+			handleError(c, response.Error)
 		} else {
-			c.Data(http.StatusCreated, "image/png", imageBytes)
+			c.Data(http.StatusCreated, "image/png", response.ImageBytes)
 		}
 
 	} else {

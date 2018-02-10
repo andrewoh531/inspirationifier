@@ -8,19 +8,26 @@ import (
 	"strings"
 )
 
-func CreateInspiration(url string, text string) ([]byte, error) {
+type InspirationResult struct {
+	ImageBytes []byte
+	Error      error
+}
+
+func CreateInspiration(url string, text string, done chan InspirationResult) {
 	err := validate(url)
 	if err != nil {
-		return nil, err
+		done <- InspirationResult{nil, err}
+		return
 	}
 
 	image, err := lib.DownloadImage(url)
 	if err != nil {
-		return nil, err
+		done <- InspirationResult{nil, err}
+		return
 	}
 
 	lib.AddTextToImage(image, text)
-	return convertImageNrgbaToBytes(image), nil
+	done <- InspirationResult{ convertImageNrgbaToBytes(image), nil }
 }
 
 func validate(url string) error {
