@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"image"
 	"image/png"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 var SupportedMimeTypes = map[string]bool { "image/png": true, "image/jpeg": true }
@@ -12,7 +12,7 @@ var SupportedMimeTypes = map[string]bool { "image/png": true, "image/jpeg": true
 func ValidateImageMimeType(url string) error {
 	response, err := http.Head(url)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 		return err
 	}
 	defer response.Body.Close()
@@ -30,15 +30,15 @@ func ValidateImageMimeType(url string) error {
 
 func DownloadImage(url string) (*image.NRGBA, error) {
 	response, err := http.Get(url)
-	defer response.Body.Close()
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 		return nil, err
 	}
+	defer response.Body.Close()
 
 	pngImage, err := png.Decode(response.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 		return nil, err
 	}
 

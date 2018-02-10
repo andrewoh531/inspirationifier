@@ -36,6 +36,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/h2non/gock"
+  packages = ["."]
+  revision = "26775f23aa9da4cbd47bc2600a57ac07bbf3bd20"
+  version = "v1.0.7"
+
+[[projects]]
   name = "github.com/mattn/go-isatty"
   packages = ["."]
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
@@ -46,6 +52,12 @@
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
+  version = "v1.0.4"
 
 [[projects]]
   name = "github.com/stretchr/testify"
@@ -61,6 +73,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "5119cf507ed5294cc409c092980c7497ee5d6fd2"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/image"
   packages = [
     "font",
@@ -73,7 +91,10 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "3dbebcf8efb6a5011a60c2b4591c1022a759af8a"
 
 [[projects]]
@@ -91,6 +112,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ccce53bb99fb9dab1b9ceae13ca609fc9cf30b66a8743eb009f14b87ee59bca2"
+  inputs-digest = "cc3c8c7c39a74f9927e3cde43924d8ba97a843bcbfcd72b101220024ee35555d"
   solver-name = "gps-cdcl"
   solver-version = 1

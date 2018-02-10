@@ -37,3 +37,7 @@ curl  -H "Content-Type: application/json" -d @sample-payload.json localhost:8080
 The following limitations and technical debt remains due to time constraints:
 - Supports only the following MIME types: image/png and image/jpeg due to time restrictions
 - Integration tests hit external services rather than having a full contained test using Docker containers
+
+## Notes
+- Goroutine used but purely for the point of demonstration. No performance gain expected as tasks
+for creating the inspiration is sequential
