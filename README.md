@@ -15,6 +15,10 @@ To the run the application execute the following commands:
 2. `go run main` - Run the application (runs on port 8080)
 
 
+## Running tests
+To run the test, execute the following command to run all tests including
+the ones in the sub folders: `go test ./...`
+
 ## Endpoints
 This service has the following endpoints:
 1. /api/v1/createInspiration (POST)

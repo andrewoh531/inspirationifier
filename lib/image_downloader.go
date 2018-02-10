@@ -2,56 +2,52 @@ package lib
 
 import (
 	"net/http"
-	"fmt"
 	"image"
 	"image/png"
-	"bytes"
+	"log"
 )
 
+var SupportedMimeTypes = map[string]bool { "image/png": true, "image/jpeg": true }
 
-func CreateInspiration(url string, text string) []byte {
-	validateImageMimeType(url)
-	image := downloadImage(url)
-	addText(image, text)
-	return convertImageNrgbaToBytes(image)
-}
-
-func validateImageMimeType(url string) {
+func ValidateImageMimeType(url string) error {
 	response, err := http.Head(url)
 	defer response.Body.Close()
-	checkError(err)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
 
-	contentType := response.Header["Content-Type"]
-	fmt.Println("Content type: ", contentType)
+	contentTypeArray := response.Header["Content-Type"]
+
+	for _, contentType := range contentTypeArray {
+		if (SupportedMimeTypes[contentType]) {
+			return nil
+		}
+	}
+
+	return NewUserError("Url does not contain supported MimeType. Supported mimetypes are: image/png and image/jpeg")
 }
 
-func downloadImage(url string) *image.NRGBA {
+func DownloadImage(url string) (img *image.NRGBA, e error) {
 	response, err := http.Get(url)
 	defer response.Body.Close()
-	checkError(err)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
 
 	pngImage, err := png.Decode(response.Body)
-	checkError(err)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
 
 	nrgbaImage := pngImage.(*image.NRGBA)
-	return nrgbaImage
+	return nrgbaImage, nil
 }
-
-func convertImageNrgbaToBytes(nrgbaImage *image.NRGBA) []byte {
-	var img image.Image
-	img = nrgbaImage
-
-	buf := new(bytes.Buffer)
-
-	err := png.Encode(buf, img)
-	checkError(err)
-
-	return buf.Bytes()
-}
-
 
 func checkError(err error) {
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

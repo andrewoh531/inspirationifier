@@ -8,7 +8,7 @@ import (
 	"golang.org/x/image/font/basicfont"
 )
 
-func addText(img *image.NRGBA, text string) {
+func AddTextToImage(img *image.NRGBA, text string) {
 	addLabelHelper(img, 20, 30, text)
 }
 
