@@ -25,10 +25,10 @@ func ValidateImageMimeType(url string) error {
 		}
 	}
 
-	return NewUserError("Url does not contain supported MimeType. Supported mimetypes are: image/png and image/jpeg")
+	return NewUserError("Url does not contain supported MIME type. Supported MIME types are: image/png and image/jpeg")
 }
 
-func DownloadImage(url string) (img *image.NRGBA, e error) {
+func DownloadImage(url string) (*image.NRGBA, error) {
 	response, err := http.Get(url)
 	defer response.Body.Close()
 	if err != nil {

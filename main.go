@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin/binding"
 	"spaceship/controllers"
+	"spaceship/lib"
 )
 
 func setupRouter() *gin.Engine {
@@ -37,9 +38,26 @@ func createInspiration(c *gin.Context) {
 	var request inspirationPayload
 
 	if err := c.ShouldBindWith(&request, binding.JSON); err == nil {
-		imageBytes := controllers.CreateInspiration(request.Url, request.Text)
-		c.Data(http.StatusCreated, "image/png", imageBytes)
+		imageBytes, err := controllers.CreateInspiration(request.Url, request.Text)
+
+		if err != nil {
+			handleError(c, err)
+		} else {
+			c.Data(http.StatusCreated, "image/png", imageBytes)
+		}
+
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "hmmm bad request yo"}) // TODO Fix error message returned
+		c.String(http.StatusBadRequest, "JSON payload requires both a 'text' and 'url' property")
 	}
+}
+
+func handleError(c *gin.Context, err error) {
+
+	switch err.(type) {
+		case *lib.UserError:
+			c.String(http.StatusBadRequest, err.Error())
+		default:
+			c.String(http.StatusInternalServerError, err.Error())
+	}
+
 }

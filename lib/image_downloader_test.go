@@ -30,6 +30,6 @@ func TestValidateImageMimeTypeShouldNotReturnErrorIfValidMimeType(t *testing.T) 
 
 func TestValidateImageMimeTypeShouldReturnUserErrorIfMimeTypeNotSupported(t *testing.T) {
 	actualError := ValidateImageMimeType(UnsupportedMimeTypeUrl)
-	expectedError := NewUserError("Url does not contain supported MimeType. Supported mimetypes are: image/png and image/jpeg")
+	expectedError := NewUserError("Url does not contain supported MIME type. Supported MIME types are: image/png and image/jpeg")
 	assert.Equal(t, expectedError, actualError)
 }

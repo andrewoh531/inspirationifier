@@ -10,6 +10,6 @@ func NewUserError(message string) *UserError {
 	}
 }
 
-func (e *UserError) Error() string {
+func (e UserError) Error() string {
 	return e.message
 }
