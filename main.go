@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/gin-gonic/gin/binding"
-	"spaceship/controllers"
-	"spaceship/lib"
+	"inspirationifier/controllers"
+	"inspirationifier/lib"
 )
 
 func setupRouter() *gin.Engine {

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"spaceship/lib"
+	"inspirationifier/lib"
 	"image"
 	"bytes"
 	"image/png"

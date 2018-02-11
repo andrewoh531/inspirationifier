@@ -3,7 +3,7 @@ package controllers
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"spaceship/lib"
+	"inspirationifier/lib"
 	"os"
 	"github.com/h2non/gock"
 )
