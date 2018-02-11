@@ -13,6 +13,8 @@ type InspirationResult struct {
 	Error      error
 }
 
+// Given an image URL and a text string will overlay the text onto the image
+// This method needs to be invoked as a Go Routine
 func CreateInspiration(url string, text string, done chan InspirationResult) {
 	err := validate(url)
 	if err != nil {

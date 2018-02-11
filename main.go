@@ -22,7 +22,7 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	r := setupRouter()
-	r.Run(":8080") // TODO Pick this up as environment variable
+	r.Run()
 }
 
 type inspirationPayload struct {
