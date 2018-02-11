@@ -6,28 +6,50 @@ import (
 	"github.com/h2non/gock"
 	"fmt"
 	"net/url"
-	//"io/ioutil"
 	"os"
 	"errors"
 )
 
 const UrlBase = "http://foo.com"
 const UrlPath = "/bar"
-const DummyImagePath = "../testUtilities/seattle-seahawks-logo.png"
+const SamplePngImagePath = "../test-resources/sample.png"
+const SampleJpegImagePath = "../test-resources/sample.jpeg"
 var DummyError = errors.New("Dummy error")
 
-func TestDownloadImageShouldReturnImageNrgba(t *testing.T) {
+func TestDownloadPngImageShouldReturnImageNrgba(t *testing.T) {
 	// Given
-	dummyImage, err := os.Open(DummyImagePath)
+	dummyImage, err := os.Open(SamplePngImagePath)
 	if err != nil {
-		assert.Fail(t, "Error retrieving dummy image from " +DummyImagePath)
+		assert.Fail(t, "Error retrieving dummy image from " + SamplePngImagePath)
 	}
 
 	defer gock.Off()
 	gock.New(UrlBase).
 		Get(UrlPath).
 		Reply(200).
-			Body(dummyImage)
+		SetHeader("Content-Type", "image/png").
+		Body(dummyImage)
+
+	// When
+	actualImage, err := DownloadImage(UrlBase + UrlPath)
+
+	// Then
+	assert.Equal(t, "*image.NRGBA", fmt.Sprintf("%T", actualImage))
+}
+
+func TestDownloadJpegImageShouldReturnImageNrgba(t *testing.T) {
+	// Given
+	dummyImage, err := os.Open(SampleJpegImagePath)
+	if err != nil {
+		assert.Fail(t, "Error retrieving dummy image from " + SampleJpegImagePath)
+	}
+
+	defer gock.Off()
+	gock.New(UrlBase).
+		Get(UrlPath).
+		Reply(200).
+		SetHeader("Content-Type", "image/jpeg").
+		Body(dummyImage)
 
 	// When
 	actualImage, err := DownloadImage(UrlBase + UrlPath)
